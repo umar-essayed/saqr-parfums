@@ -511,14 +511,8 @@ export const UI_STRINGS = {
 };
 
 export function AppSettingsProvider({ children }) {
-  // Theme state: 'dark' | 'light'
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem('saqr_theme') || 'dark';
-    } catch {
-      return 'dark';
-    }
-  });
+  // Theme state: Forced to 'dark' per user request (Light mode disabled & commented out)
+  const [theme, setTheme] = useState('dark');
 
   // Language state: 'ar' | 'en'
   const [lang, setLang] = useState(() => {
@@ -529,18 +523,13 @@ export function AppSettingsProvider({ children }) {
     }
   });
 
-  // Apply theme to DOM
+  // Apply dark theme exclusively to DOM
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'light') {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    } else {
-      root.classList.remove('light');
-      root.classList.add('dark');
-    }
+    root.classList.remove('light');
+    root.classList.add('dark');
     try {
-      localStorage.setItem('saqr_theme', theme);
+      localStorage.setItem('saqr_theme', 'dark');
     } catch (e) {
       console.error(e);
     }
@@ -558,8 +547,10 @@ export function AppSettingsProvider({ children }) {
     }
   }, [lang]);
 
+  // Theme toggle disabled
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    // Light mode is currently disabled
+    setTheme('dark');
   };
 
   const toggleLang = () => {

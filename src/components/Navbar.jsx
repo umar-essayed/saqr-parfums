@@ -58,7 +58,7 @@ export default function Navbar() {
               </span>
             </button>
 
-            {/* Theme Toggle (Light / Dark) */}
+            {/* Theme Toggle (Light / Dark) - موقوف حالياً بناء على طلب العميل
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all active:scale-95"
@@ -71,6 +71,7 @@ export default function Navbar() {
                 <Moon className="w-4 h-4 text-saqr-gold" />
               )}
             </button>
+            */}
 
             {/* Track Order */}
             <Link
