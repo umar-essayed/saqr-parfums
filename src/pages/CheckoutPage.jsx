@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { supabase, config } from '../lib/supabase';
+import { supabase, supabaseAdmin, config } from '../lib/supabase';
 import { useCart, OFFICIAL_PHONE, WHATSAPP_LINK } from '../context/CartContext';
 import { useAppSettings } from '../context/AppSettingsContext';
 import {
@@ -54,13 +54,18 @@ export default function CheckoutPage() {
       return;
     }
 
-    const cleanPhone = formData.phone.trim().replace(/\s+/g, '');
-    if (!/^01[0125][0-9]{8}$/.test(cleanPhone) && cleanPhone.length < 10) {
-      setErrorMessage(lang === 'ar' ? 'يرجى إدخال رقم هاتف مصري صحيح (11 رقم يبدأ بـ 01).' : 'Please enter a valid Egyptian mobile number (11 digits starting with 01).');
+    const cleanPhone = formData.phone.trim().replace(/[\s\-\+]/g, '');
+    if (cleanPhone.length < 10) {
+      setErrorMessage(
+        lang === 'ar'
+          ? 'يرجى إدخال رقم هاتف صحيح للتواصل (11 رقم).'
+          : 'Please enter a valid phone number (at least 10 digits).'
+      );
       return;
     }
 
-    if (!config.isConfigured || !supabase) {
+    const client = supabaseAdmin || supabase;
+    if (!config.isConfigured || !client) {
       setErrorMessage(lang === 'ar' ? 'قاعدة بيانات المتجر غير متصلة.' : 'Store database is disconnected.');
       return;
     }
@@ -68,12 +73,13 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      const orderCode = `SQR-${randomNum}`;
-      const trackingToken = 'tkn_' + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+      const isUuid = (val) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      const orderCode = `SQR-${Date.now().toString().slice(-4)}${randomSuffix.toString().slice(-2)}`;
+      const trackingToken = 'tkn_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
 
       // 1. Insert order into Supabase
-      const { data: orderData, error: orderError } = await supabase
+      const { data: orderData, error: orderError } = await client
         .from('orders')
         .insert({
           order_code: orderCode,
@@ -97,19 +103,19 @@ export default function CheckoutPage() {
       // 2. Insert order items
       const orderItemsToInsert = cart.map((item) => ({
         order_id: orderData.id,
-        perfume_id: item.id,
+        perfume_id: isUuid(item.id) ? item.id : null,
         perfume_name: `${item.name} (${item.volume_ml} ml)`,
         unit_price: item.price,
         quantity: item.quantity,
         image_url: item.image_url
       }));
 
-      const { error: itemsError } = await supabase
+      const { error: itemsError } = await client
         .from('order_items')
         .insert(orderItemsToInsert);
 
       if (itemsError) {
-        console.error('Error inserting items:', itemsError);
+        console.warn('Error inserting items:', itemsError);
       }
 
       // 3. Save locally for instant tracking
@@ -133,7 +139,12 @@ export default function CheckoutPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Order checkout error:', err);
-      setErrorMessage(lang === 'ar' ? 'حدث خطأ أثناء تأكيد الطلب. يرجى المحاولة مرة أخرى أو التواصل معنا عبر واتساب.' : 'An error occurred while confirming your order. Please try again.');
+      const detail = err?.message || err?.error_description || (typeof err === 'string' ? err : '');
+      setErrorMessage(
+        lang === 'ar'
+          ? `تعذر تأكيد الطلب: ${detail || 'يرجى المحاولة مرة أخرى أو التواصل معنا عبر واتساب'}`
+          : `Could not confirm order: ${detail || 'Please try again or contact us via WhatsApp'}`
+      );
     } finally {
       setSubmitting(false);
     }
