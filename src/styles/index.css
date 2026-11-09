@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    background-color: #08080A;
+    color: #F5F5F7;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* Apple-style ultra-thin scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #08080A;
+}
+::-webkit-scrollbar-thumb {
+  background: #23232A;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+/* Glassmorphism subtle blur */
+.apple-glass {
+  background: rgba(15, 15, 18, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.apple-glass-gold {
+  background: rgba(197, 160, 89, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(197, 160, 89, 0.12);
+}
+
+/* Hide scrollbar for clean carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* -------------------------------------------------------------
+   COMPREHENSIVE PURE LIGHT MODE (الوضع الأبيض الكامل)
+   Zero dark spots, pristine Apple minimalist luxury ivory/white
+------------------------------------------------------------- */
+html.light body {
+  background-color: #F8F8FA !important;
+  color: #1D1D1F !important;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #F8F8FA;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #D1D1D6;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #9E7B35;
+}
+
+html.light .bg-saqr-base {
+  background-color: #F8F8FA !important;
+  color: #1D1D1F !important;
+}
+
+html.light .bg-\[\#08080A\] {
+  background-color: #F8F8FA !important;
+}
+
+html.light .bg-\[\#0E0E12\],
+html.light .bg-\[\#0F0F12\],
+html.light .bg-\[\#0C0C0E\] {
+  background-color: #FFFFFF !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .bg-\[\#15151A\] {
+  background-color: #F0F0F4 !important;
+  color: #111113 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-black {
+  background-color: #ECECEE !important;
+}
+
+/* Text overrides in light mode */
+html.light .text-white {
+  color: #111113 !important;
+}
+html.light .text-saqr-appleLight {
+  color: #1D1D1F !important;
+}
+html.light .text-saqr-gray {
+  color: #58585D !important;
+}
+html.light .text-zinc-500,
+html.light .text-zinc-600 {
+  color: #6E6E73 !important;
+}
+
+/* Borders in light mode */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Subtle background fills */
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.035) !important;
+}
+html.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/\[0\.03\] {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Glass in light mode */
+html.light .apple-glass {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Card image melting gradient in light mode */
+html.light .from-\[\#0E0E12\] {
+  --tw-gradient-from: #FFFFFF var(--tw-gradient-from-position) !important;
+}
+html.light .via-\[\#0E0E12\]\/80,
+html.light .via-\[\#0E0E12\]\/85 {
+  --tw-gradient-via: rgba(255, 255, 255, 0.85) var(--tw-gradient-via-position) !important;
+}
+html.light .from-saqr-base {
+  --tw-gradient-from: #F8F8FA var(--tw-gradient-from-position) !important;
+}
+html.light .via-saqr-base\/80,
+html.light .via-saqr-base\/60 {
+  --tw-gradient-via: rgba(248, 248, 250, 0.85) var(--tw-gradient-via-position) !important;
+}
+html.light .to-saqr-base {
+  --tw-gradient-to: #F8F8FA var(--tw-gradient-to-position) !important;
+}
+
+/* Inputs in light mode */
+html.light input,
+html.light textarea,
+html.light select {
+  color: #111113 !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #8E8E93 !important;
+}
