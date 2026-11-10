@@ -14,7 +14,9 @@ export default function CartDrawer() {
     updateQuantity,
     removeFromCart,
     totalItems,
-    totalAmount
+    totalAmount,
+    shippingFee,
+    grandTotal
   } = useCart();
 
   if (!isCartOpen) return null;
@@ -154,13 +156,13 @@ export default function CartDrawer() {
             <div className="p-5 border-t border-white/5 bg-[#08080A]/90 backdrop-blur-md space-y-3">
               <div className="flex items-center justify-between text-xs text-saqr-gray">
                 <span>{t('shippingAndDelivery')}</span>
-                <span className="text-emerald-400 font-medium">{t('freeAcrossEgypt')}</span>
+                <span className="text-saqr-gold font-medium">{shippingFee} {t('currency')} ({lang === 'ar' ? 'شحن موحد' : 'Fixed'})</span>
               </div>
 
               <div className="flex items-center justify-between text-sm font-bold text-white pb-1">
                 <span>{t('totalPriceLabel')}</span>
                 <span className="text-base text-saqr-gold font-extrabold">
-                  {totalAmount.toLocaleString()} {t('currency')}
+                  {grandTotal.toLocaleString()} {t('currency')}
                 </span>
               </div>
 

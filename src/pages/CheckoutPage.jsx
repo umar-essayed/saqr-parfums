@@ -25,7 +25,7 @@ import {
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { t, getLocalizedPerfume, governorates, lang } = useAppSettings();
-  const { cart, totalAmount, clearCart, saveOrderLocally } = useCart();
+  const { cart, totalAmount, shippingFee, grandTotal, clearCart, saveOrderLocally } = useCart();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -90,8 +90,8 @@ export default function CheckoutPage() {
           shipping_address: formData.address.trim(),
           notes: formData.notes.trim() || null,
           subtotal: totalAmount,
-          shipping_fee: 0,
-          total_amount: totalAmount,
+          shipping_fee: shippingFee,
+          total_amount: grandTotal,
           payment_method: 'الدفع عند الاستلام',
           status: 'pending'
         })
@@ -127,7 +127,9 @@ export default function CheckoutPage() {
         customer_phone: cleanPhone,
         governorate: formData.governorate,
         shipping_address: formData.address.trim(),
-        total_amount: totalAmount,
+        subtotal: totalAmount,
+        shipping_fee: shippingFee,
+        total_amount: grandTotal,
         status: 'pending',
         items: [...cart],
         created_at: new Date().toISOString()
@@ -466,7 +468,7 @@ export default function CheckoutPage() {
                       </>
                     ) : (
                       <>
-                        <span>{t('confirmOrderSubmit').replace('{total}', totalAmount.toLocaleString())}</span>
+                        <span>{t('confirmOrderSubmit').replace('{total}', grandTotal.toLocaleString())}</span>
                         {lang === 'ar' ? (
                           <ArrowRight className="w-4 h-4 rotate-180" />
                         ) : (
@@ -525,12 +527,12 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex items-center justify-between text-saqr-gray">
                     <span>{t('shippingAndDelivery')}</span>
-                    <span className="text-emerald-400 font-bold">{t('freeDeliveryBadge')}</span>
+                    <span className="text-saqr-gold font-bold">{shippingFee} {t('currency')} ({lang === 'ar' ? 'شحن موحد' : 'Fixed'})</span>
                   </div>
                   <div className="flex items-center justify-between text-sm font-bold text-white pt-2 border-t border-white/5">
                     <span>{t('totalDueLabel')}</span>
                     <span className="text-base font-extrabold text-saqr-gold">
-                      {totalAmount.toLocaleString()} {t('currency')}
+                      {grandTotal.toLocaleString()} {t('currency')}
                     </span>
                   </div>
                 </div>

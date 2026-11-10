@@ -9,6 +9,7 @@ export const getPerfumePrice = (perfume, volume_ml) => {
 
 export const OFFICIAL_PHONE = '01041586186';
 export const WHATSAPP_LINK = 'https://wa.me/201041586186';
+export const SHIPPING_FEE = 55;
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
@@ -105,6 +106,8 @@ export const CartProvider = ({ children }) => {
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const shippingFee = cart.length > 0 ? SHIPPING_FEE : 0;
+  const grandTotal = totalAmount + shippingFee;
 
   return (
     <CartContext.Provider
@@ -122,6 +125,9 @@ export const CartProvider = ({ children }) => {
         saveOrderLocally,
         totalAmount,
         totalItems,
+        shippingFee,
+        grandTotal,
+        SHIPPING_FEE,
         OFFICIAL_PHONE,
         WHATSAPP_LINK
       }}
