@@ -23,6 +23,5 @@ Allow: /images/
 User-agent: Bingbot
 Allow: /
 
-# Sitemaps
-Sitemap: https://saqr-parfums.vercel.app/sitemap.xml
-Sitemap: https://saqr-perfumes.eg/sitemap.xml
+# Sitemap Location
+Sitemap: https://www.saqr-eg.online/sitemap.xml
