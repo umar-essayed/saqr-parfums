@@ -9,7 +9,45 @@ export const getPerfumePrice = (perfume, volume_ml) => {
 
 export const OFFICIAL_PHONE = '01041586186';
 export const WHATSAPP_LINK = 'https://wa.me/201041586186';
-export const SHIPPING_FEE = 55;
+
+export const SHIPPING_RATES = {
+  alexandria: 60,
+  governorates: 90,
+  remote: 110
+};
+
+export const getShippingFee = (governorate) => {
+  if (!governorate) return 90;
+  const gov = String(governorate).trim().toLowerCase();
+
+  // 1. Alexandria: 60 EGP
+  if (gov.includes('إسكندرية') || gov.includes('اسكندرية') || gov.includes('alexandria')) {
+    return 60;
+  }
+
+  // 2. Upper Egypt & Remote Regions (الأقاليم): 110 EGP
+  const remoteRegions = [
+    'فيوم', 'fayoum',
+    'بني سويف', 'beni suef',
+    'منيا', 'minya',
+    'أسيوط', 'اسيوط', 'asyut',
+    'سوهاج', 'sohag',
+    'قنا', 'qena',
+    'أقصر', 'اقصر', 'luxor',
+    'أسوان', 'اسوان', 'aswan',
+    'بحر أحمر', 'بحر احمر', 'red sea',
+    'وادي جديد', 'new valley',
+    'مطروح', 'matrouh',
+    'سيناء', 'sinai'
+  ];
+
+  if (remoteRegions.some(region => gov.includes(region))) {
+    return 110;
+  }
+
+  // 3. Other Governorates (Cairo, Giza, Delta, Canal): 90 EGP
+  return 90;
+};
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
@@ -106,8 +144,6 @@ export const CartProvider = ({ children }) => {
 
   const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const shippingFee = cart.length > 0 ? SHIPPING_FEE : 0;
-  const grandTotal = totalAmount + shippingFee;
 
   return (
     <CartContext.Provider
@@ -125,9 +161,8 @@ export const CartProvider = ({ children }) => {
         saveOrderLocally,
         totalAmount,
         totalItems,
-        shippingFee,
-        grandTotal,
-        SHIPPING_FEE,
+        getShippingFee,
+        SHIPPING_RATES,
         OFFICIAL_PHONE,
         WHATSAPP_LINK
       }}

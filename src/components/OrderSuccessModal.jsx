@@ -28,7 +28,7 @@ export default function OrderSuccessModal({ order, onClose }) {
         </h3>
 
         <p className="text-xs sm:text-sm text-saqr-gray leading-relaxed mb-6">
-          سيقوم فريق صقر بتجهيز عطرك الفاخر وشحنه فوراً إلى {order.governorate}. الدفع عند الاستلام بعد المعاينة.
+          سيقوم فريق صقر بتجهيز عطرك الفاخر وشحنه فوراً إلى {order.governorate}. الدفع عند الاستلام نقداً مع المندوب.
         </p>
 
         {/* Order Code Box */}

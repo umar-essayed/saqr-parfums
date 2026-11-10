@@ -60,7 +60,7 @@ export default function Footer() {
               {t('pillarCod')}
             </span>
             <p className="text-[11px] text-saqr-gray">
-              {lang === 'ar' ? 'معاينة وفحص الزجاجة قبل الدفع للمندوب' : 'Inspect and test your bottle before courier payment'}
+              {lang === 'ar' ? 'الدفع نقداً عند استلام شحنتك لباب بيتك' : 'Cash on delivery right to your doorstep'}
             </p>
           </div>
           <div className="space-y-1">

@@ -25,7 +25,7 @@ import {
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { t, getLocalizedPerfume, governorates, lang } = useAppSettings();
-  const { cart, totalAmount, shippingFee, grandTotal, clearCart, saveOrderLocally } = useCart();
+  const { cart, totalAmount, getShippingFee, clearCart, saveOrderLocally } = useCart();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,6 +34,10 @@ export default function CheckoutPage() {
     address: '',
     notes: ''
   });
+
+  // Dynamic regional shipping: 60 Alex, 90 Governorates, 110 Remote Regions
+  const shippingFee = cart.length > 0 && getShippingFee ? getShippingFee(formData.governorate) : 90;
+  const grandTotal = totalAmount + shippingFee;
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -391,20 +395,33 @@ export default function CheckoutPage() {
 
                 {/* Governorate */}
                 <div>
-                  <label className="text-xs text-saqr-gray block mb-1.5 font-medium">
-                    {t('governorateLabel')} <span className="text-saqr-gold">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs text-saqr-gray font-medium">
+                      {t('governorateLabel')} <span className="text-saqr-gold">*</span>
+                    </label>
+                    <span className="text-[11px] text-saqr-gold font-bold">
+                      {lang === 'ar' ? `الشحن: ${shippingFee} ج.م` : `Shipping: ${shippingFee} EGP`}
+                    </span>
+                  </div>
                   <select
                     value={formData.governorate}
                     onChange={(e) => setFormData({ ...formData, governorate: e.target.value })}
                     className="w-full px-4 py-3 rounded-2xl bg-[#15151A] border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-saqr-gold transition-colors cursor-pointer"
                   >
-                    {governorates.map((gov) => (
-                      <option key={gov} value={gov}>
-                        {gov}
-                      </option>
-                    ))}
+                    {governorates.map((gov) => {
+                      const fee = getShippingFee ? getShippingFee(gov) : 90;
+                      return (
+                        <option key={gov} value={gov}>
+                          {gov} — ({fee} {t('currency')})
+                        </option>
+                      );
+                    })}
                   </select>
+                  <span className="text-[10px] text-zinc-500 block mt-1.5">
+                    {lang === 'ar'
+                      ? 'أسعار الشحن: 60 ج.م إسكندرية • 90 ج.م المحافظات • 110 ج.م الأقاليم'
+                      : 'Shipping Rates: 60 EGP Alexandria • 90 EGP Governorates • 110 EGP Remote Regions'}
+                  </span>
                 </div>
 
                 {/* Detailed Address */}
@@ -526,8 +543,8 @@ export default function CheckoutPage() {
                     <span className="text-white font-medium">{totalAmount.toLocaleString()} {t('currency')}</span>
                   </div>
                   <div className="flex items-center justify-between text-saqr-gray">
-                    <span>{t('shippingAndDelivery')}</span>
-                    <span className="text-saqr-gold font-bold">{shippingFee} {t('currency')} ({lang === 'ar' ? 'شحن موحد' : 'Fixed'})</span>
+                    <span>{t('shippingAndDelivery')} ({formData.governorate})</span>
+                    <span className="text-saqr-gold font-bold">{shippingFee} {t('currency')}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm font-bold text-white pt-2 border-t border-white/5">
                     <span>{t('totalDueLabel')}</span>
