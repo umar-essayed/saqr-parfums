@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- 1. Homepage (الصفحة الرئيسية) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/og-image.jpg</image:loc>
+      <image:title>برفانات صقر - SAQR Parfums</image:title>
+      <image:caption>دار صقر للعطور المصرية الفاخرة - زيوت معتقة ثبات +24 ساعة</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 2. Shop Page (المتجر الكامل) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/shop</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>متجر عطور صقر - SAQR Fragrance Collection</image:title>
+      <image:caption>تشكيلة عطور صقر الملكية: بيانكو لاتيه، انفيكتوس، ايربابورا، خمرة قهوة</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 3. Product: Bianco Latte (عطر بيانكو لاتيه) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/perfume/bianco-latte</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>عطر بيانكو لاتيه صقر - Bianco Latte SAQR</image:title>
+      <image:caption>عطر بيانكو لاتيه الفاخر من صقر - كراميل نقي وفانيليا فرنسية معتقة ثبات 24 ساعة</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 4. Product: Invictus Elixir (عطر انفيكتوس اليكسير) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/perfume/invictus-elixir</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>عطر انفيكتوس اليكسير صقر - Invictus Elixir SAQR</image:title>
+      <image:caption>عطر انفيكتوس اليكسير المكثف من صقر - أخشاب عنبر وتوابل حارة للشخصيات القيادية</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 5. Product: Erba Pura (عطر ايربابورا) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/perfume/erba-pura</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>عطر ايربابورا صقر - Erba Pura SAQR</image:title>
+      <image:caption>عطر ايربابورا من صقر - فواكه البحر المتوسط النادرة ومسك أبيض ملكي فواح</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 6. Product: Invictus (عطر انفيكتوس) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/perfume/invictus</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>عطر انفيكتوس صقر - Invictus SAQR</image:title>
+      <image:caption>عطر انفيكتوس النصر من صقر - انتعاش بحري لاذع مع دفء خشب الغاياك</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 7. Product: Khamrah Qahwa (عطر خمرة قهوة) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/perfume/khamrah-qahwa</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://saqr-parfums.vercel.app/images/perfume-unified.jpg</image:loc>
+      <image:title>عطر خمرة قهوة صقر - Khamrah Qahwa SAQR</image:title>
+      <image:caption>عطر خمرة قهوة من صقر - قهوة عربية محمصة وقرفة مع لمسات كراميل وتونكا دافئة</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 8. Track Order (متابعة الطلبات) -->
+  <url>
+    <loc>https://saqr-parfums.vercel.app/track</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+</urlset>

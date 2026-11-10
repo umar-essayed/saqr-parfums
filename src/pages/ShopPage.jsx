@@ -24,6 +24,12 @@ export default function ShopPage() {
 
   const { addToCart, setSelectedPerfume } = useCart();
 
+  useEffect(() => {
+    document.title = lang === 'ar'
+      ? 'متجر برفانات صقر | تصفح التشكيلة الكاملة والأسعار 🦅'
+      : 'SAQR Parfums Shop | Explore All Signature Fragrances';
+  }, [lang]);
+
   const categories = [
     { key: 'all', label: t('categoryAll') },
     { key: 'men', label: t('categoryMen') },

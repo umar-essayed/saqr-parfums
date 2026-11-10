@@ -45,6 +45,12 @@ export default function TrackOrderPage() {
   ];
 
   // Load order by code or token
+  useEffect(() => {
+    document.title = lang === 'ar'
+      ? 'متابعة حالة الطلب والشحنة | صقر للبرفانات'
+      : 'Track Order & Shipment | SAQR Parfums';
+  }, [lang]);
+
   const searchOrder = async (codeToSearch) => {
     const code = (codeToSearch || searchInput).trim().toUpperCase();
     if (!code) return;

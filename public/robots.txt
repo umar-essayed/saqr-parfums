@@ -1,0 +1,28 @@
+# ==============================================================
+# SAQR Parfums | صقر للعطور الفاخرة
+# Official Search Engine Crawler Instructions (Robots.txt)
+# ==============================================================
+
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /perfume/
+Allow: /track
+Disallow: /admin
+Disallow: /checkout
+Disallow: /*?*token=*
+
+User-agent: Googlebot
+Allow: /
+Allow: /shop
+Allow: /perfume/
+
+User-agent: Googlebot-Image
+Allow: /images/
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemaps
+Sitemap: https://saqr-parfums.vercel.app/sitemap.xml
+Sitemap: https://saqr-perfumes.eg/sitemap.xml

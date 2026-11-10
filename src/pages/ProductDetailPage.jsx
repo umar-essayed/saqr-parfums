@@ -110,6 +110,26 @@ export default function ProductDetailPage() {
     fetchPerfumeData();
   }, [slug, lang]);
 
+  // Dynamic SEO title & description per perfume
+  useEffect(() => {
+    if (!rawPerfume) return;
+    const localized = getLocalizedPerfume(rawPerfume);
+    const pageTitle = lang === 'ar'
+      ? `${localized.name} | برفانات صقر الأصلية - ثبات +24 ساعة 🦅`
+      : `${localized.name} | SAQR Parfums - 24h Royal Extrait`;
+    document.title = pageTitle;
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        lang === 'ar'
+          ? `عطر ${localized.name} من دار صقر للعطور. ${localized.description || ''} (50 مل بـ 350 ج.م • 100 مل بـ 650 ج.م). شحن لباب بيتك ودفع عند الاستلام.`
+          : `${localized.name} from The House of SAQR. ${localized.description || ''} (50ml: 350 EGP • 100ml: 650 EGP). Cash on delivery across Egypt.`
+      );
+    }
+  }, [rawPerfume, lang]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-saqr-base text-saqr-appleLight flex flex-col">
