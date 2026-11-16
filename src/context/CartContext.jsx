@@ -7,8 +7,8 @@ export const getPerfumePrice = (perfume, volume_ml) => {
   return Number(volume_ml) === 50 ? 350 : 650;
 };
 
-export const OFFICIAL_PHONE = '01041586186';
-export const WHATSAPP_LINK = 'https://wa.me/201041586186';
+export const OFFICIAL_PHONE = '01041586187';
+export const WHATSAPP_LINK = 'https://wa.me/201041586187';
 
 export const SHIPPING_RATES = {
   alexandria: 60,
