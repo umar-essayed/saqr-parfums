@@ -98,7 +98,7 @@ export default function ProductModal() {
                         : 'bg-white/5 text-saqr-gray hover:text-white'
                     }`}
                   >
-                    50 {lang === 'ar' ? 'مل' : 'ml'} — 350 {t('currency')}
+                    50 {lang === 'ar' ? 'مل' : 'ml'} — 400 {t('currency')}
                   </button>
                   <button
                     type="button"

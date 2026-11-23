@@ -229,7 +229,7 @@ export const UI_STRINGS = {
     // Product Grid & Shop
     shopTag: 'دار صقر للعطور',
     shopTitle: 'عطور صَقْر',
-    shopDesc: 'تصفح التوليفات الفاخرة (50 مل بـ 350 ج.م • 100 مل بـ 650 ج.م). شحن سريع لباب بيتك (60 ج إسكندرية • 90 ج المحافظات • 110 ج الأقاليم).',
+    shopDesc: 'تصفح التوليفات الفاخرة (50 مل بـ 400 ج.م • 100 مل بـ 650 ج.م). شحن سريع لباب بيتك (60 ج إسكندرية • 90 ج المحافظات • 110 ج الأقاليم).',
     searchPlaceholder: 'ابحث عن اسم العطر أو النوتات (مثال: فانيليا، قهوة، عود)...',
     categoryAll: 'الكل',
     categoryMen: 'رجالي',
@@ -390,7 +390,7 @@ export const UI_STRINGS = {
     // Product Grid & Shop
     shopTag: 'The House of SAQR',
     shopTitle: 'SAQR Parfums',
-    shopDesc: 'Explore bespoke extraits (50 ml: 350 EGP • 100 ml: 650 EGP). Fast dispatch (60 EGP Alex • 90 EGP Governorates • 110 EGP Regions).',
+    shopDesc: 'Explore bespoke extraits (50 ml: 400 EGP • 100 ml: 650 EGP). Fast dispatch (60 EGP Alex • 90 EGP Governorates • 110 EGP Regions).',
     searchPlaceholder: 'Search fragrance or notes (e.g. Vanilla, Coffee, Amber)...',
     categoryAll: 'All',
     categoryMen: 'Men',

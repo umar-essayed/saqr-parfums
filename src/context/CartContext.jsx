@@ -4,7 +4,7 @@ const CartContext = createContext();
 
 export const getPerfumePrice = (perfume, volume_ml) => {
   if (perfume?.name === 'قريباً' || perfume?.slug === 'coming-soon-secret') return 0;
-  return Number(volume_ml) === 50 ? 350 : 650;
+  return Number(volume_ml) === 50 ? 400 : 650;
 };
 
 export const OFFICIAL_PHONE = '01041586187';

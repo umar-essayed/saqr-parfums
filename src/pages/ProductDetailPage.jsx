@@ -124,8 +124,8 @@ export default function ProductDetailPage() {
       metaDesc.setAttribute(
         'content',
         lang === 'ar'
-          ? `عطر ${localized.name} من دار صقر للعطور. ${localized.description || ''} (50 مل بـ 350 ج.م • 100 مل بـ 650 ج.م). شحن لباب بيتك ودفع عند الاستلام.`
-          : `${localized.name} from The House of SAQR. ${localized.description || ''} (50ml: 350 EGP • 100ml: 650 EGP). Cash on delivery across Egypt.`
+          ? `عطر ${localized.name} من دار صقر للعطور. ${localized.description || ''} (50 مل بـ 400 ج.م • 100 مل بـ 650 ج.م). شحن لباب بيتك ودفع عند الاستلام.`
+          : `${localized.name} from The House of SAQR. ${localized.description || ''} (50ml: 400 EGP • 100ml: 650 EGP). Cash on delivery across Egypt.`
       );
     }
   }, [rawPerfume, lang]);
@@ -306,7 +306,7 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <span className="text-xs font-bold text-white block">{t('size50Label')}</span>
-                        <span className="text-sm font-extrabold text-saqr-gold block mt-1">350 {t('currency')}</span>
+                        <span className="text-sm font-extrabold text-saqr-gold block mt-1">400 {t('currency')}</span>
                         <span className="text-[10px] text-saqr-gray block mt-0.5">{t('size50Sub')}</span>
                       </button>
 
@@ -484,7 +484,7 @@ export default function ProductDetailPage() {
                         </h4>
                         {!isRelComingSoon && (
                           <div className="mt-1 text-xs font-bold text-white">
-                            350 {t('currency')} <span className="text-saqr-gray text-[10px]">/ 650 {t('currency')}</span>
+                            400 {t('currency')} <span className="text-saqr-gray text-[10px]">/ 650 {t('currency')}</span>
                           </div>
                         )}
                       </div>

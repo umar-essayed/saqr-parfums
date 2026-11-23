@@ -180,7 +180,7 @@ export default function ProductGrid({ limit = null, showViewAll = false }) {
                                 : 'bg-white/5 text-saqr-gray hover:text-white hover:bg-white/10'
                             }`}
                           >
-                            50 {lang === 'ar' ? 'مل' : 'ml'} (350 {t('currency')})
+                            50 {lang === 'ar' ? 'مل' : 'ml'} (400 {t('currency')})
                           </button>
                           <button
                             type="button"
