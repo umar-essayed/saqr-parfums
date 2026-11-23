@@ -101,7 +101,6 @@ export default function AdminPage() {
   // Settings form
   const [settingsUrl, setSettingsUrl] = useState(config.url || '');
   const [settingsKey, setSettingsKey] = useState(config.key || '');
-  const [settingsServiceKey, setSettingsServiceKey] = useState(config.serviceKey || '');
 
   // 1. Authentication Handler
   const handleLogin = async (e) => {
@@ -287,6 +286,9 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    try {
+      localStorage.removeItem('saqr_supabase_service_key');
+    } catch {}
     if (isAuthenticated) {
       loadAdminData();
     }
@@ -1419,22 +1421,9 @@ create policy "المدير يتحكم بالستوريز" on public.stories for
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] text-saqr-gray block mb-1">
-                  Service Role Key (مفتاح الإدارة الكاملة - اختياري)
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="sb_secret_... أو service_role JWT"
-                  value={settingsServiceKey}
-                  onChange={(e) => setSettingsServiceKey(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-600 text-xs font-mono focus:outline-none focus:border-saqr-gold resize-none"
-                />
-              </div>
-
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
-                  onClick={() => saveSupabaseConfig(settingsUrl, settingsKey, settingsServiceKey)}
+                  onClick={() => saveSupabaseConfig(settingsUrl, settingsKey)}
                   className="flex-1 py-3 rounded-full bg-saqr-gold hover:bg-saqr-goldLight text-black font-bold text-xs transition-all active:scale-95"
                 >
                   حفظ وإعادة الاتصال
