@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase, supabaseAdmin, config, saveSupabaseConfig } from '../lib/supabase';
+import { supabase, supabaseAdmin, config, saveSupabaseConfig, clearSupabaseConfig } from '../lib/supabase';
 import {
   Shield,
   LayoutDashboard,
@@ -101,6 +101,7 @@ export default function AdminPage() {
   // Settings form
   const [settingsUrl, setSettingsUrl] = useState(config.url || '');
   const [settingsKey, setSettingsKey] = useState(config.key || '');
+  const [settingsServiceKey, setSettingsServiceKey] = useState(config.serviceKey || '');
 
   // 1. Authentication Handler
   const handleLogin = async (e) => {
@@ -141,50 +142,97 @@ export default function AdminPage() {
     if (supabase) supabase.auth.signOut();
   };
 
-  // 2. Fetch all admin data
+  // 2. Fetch all admin data (Resilient & Fault-Tolerant)
   const loadAdminData = async () => {
     setLoading(true);
     setErrorMessage(null);
 
     const client = supabaseAdmin || supabase;
     if (!config.isConfigured || !client) {
-      setErrorMessage('قاعدة بيانات Supabase غير متصلة. يرجى إدخال الرابط والمفتاح في تبويب الإعدادات.');
+      setErrorMessage('قاعدة بيانات Supabase غير متصلة. يرجى التأكد من بيانات الاتصال.');
       setLoading(false);
       return;
     }
 
     try {
-      // Fetch Orders
-      const { data: ordersData, error: ordersErr } = await client
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // 1. Fetch Orders
+      let allOrders = [];
+      try {
+        const { data: ordersData, error: ordersErr } = await client
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (ordersErr) throw ordersErr;
-      const allOrders = ordersData || [];
-      setOrders(allOrders);
-
-      // Fetch Perfumes
-      const { data: perfumesData, error: perfErr } = await client
-        .from('perfumes')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (perfErr) throw perfErr;
-      const allPerfumes = perfumesData || [];
-      setPerfumes(allPerfumes);
-
-      // Fetch Customers
-      const { data: customersData, error: custErr } = await client
-        .from('customers')
-        .select('*')
-        .order('total_spent', { ascending: false });
-
-      if (!custErr) {
-        setCustomers(customersData || []);
+        if (ordersErr) {
+          console.error('Error fetching orders:', ordersErr);
+          setErrorMessage(`تنبيه جلب الطلبات: ${ordersErr.message}`);
+        } else {
+          allOrders = ordersData || [];
+          setOrders(allOrders);
+        }
+      } catch (oErr) {
+        console.error('Orders query exception:', oErr);
+        setErrorMessage(`تعذر جلب الطلبات: ${oErr?.message || 'خطأ في الشبكة'}`);
       }
 
-      // Calculate Real Analytics
+      // 2. Fetch Perfumes
+      let allPerfumes = [];
+      try {
+        const { data: perfumesData, error: perfErr } = await client
+          .from('perfumes')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (perfErr) {
+          console.error('Error fetching perfumes:', perfErr);
+        } else {
+          allPerfumes = perfumesData || [];
+          setPerfumes(allPerfumes);
+        }
+      } catch (pErr) {
+        console.error('Perfumes query exception:', pErr);
+      }
+
+      // 3. Fetch Customers
+      let customersList = [];
+      try {
+        const { data: customersData, error: custErr } = await client
+          .from('customers')
+          .select('*')
+          .order('total_spent', { ascending: false });
+
+        if (!custErr && customersData && customersData.length > 0) {
+          customersList = customersData;
+          setCustomers(customersList);
+        } else {
+          // If customers table is empty or restricted, derive client summaries from existing orders
+          const customerMap = new Map();
+          allOrders.forEach(o => {
+            if (!o.customer_phone) return;
+            const existing = customerMap.get(o.customer_phone);
+            if (existing) {
+              existing.orders_count += 1;
+              existing.total_spent += Number(o.total_amount || 0);
+            } else {
+              customerMap.set(o.customer_phone, {
+                id: o.customer_id || o.id,
+                name: o.customer_name || 'عميل صقر',
+                phone: o.customer_phone,
+                governorate: o.governorate,
+                orders_count: 1,
+                total_spent: Number(o.total_amount || 0),
+                last_order_at: o.created_at
+              });
+            }
+          });
+          customersList = Array.from(customerMap.values());
+          setCustomers(customersList);
+        }
+      } catch (cErr) {
+        console.warn('Customers fallback applied:', cErr);
+      }
+
+      // 4. Calculate Real Analytics
       const rev = allOrders
         .filter(o => o.status !== 'cancelled')
         .reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
@@ -197,21 +245,27 @@ export default function AdminPage() {
         totalOrders: allOrders.length,
         pendingOrders: pendingCount,
         deliveredOrders: deliveredCount,
-        totalCustomers: customersData?.length || new Set(allOrders.map(o => o.customer_phone)).size,
+        totalCustomers: customersList.length || new Set(allOrders.map(o => o.customer_phone)).size,
         totalPerfumes: allPerfumes.filter(p => p.is_active).length
       });
 
-      // Fetch real bestsellers via view_bestsellers
-      const { data: bestData } = await client
-        .from('view_bestsellers')
-        .select('*')
-        .limit(5);
+      // 5. Fetch Bestsellers (Real View with Fallback)
+      try {
+        const { data: bestData, error: bestErr } = await client
+          .from('view_bestsellers')
+          .select('*')
+          .limit(5);
 
-      if (bestData) {
-        setBestsellers(bestData);
+        if (!bestErr && bestData && bestData.length > 0) {
+          setBestsellers(bestData);
+        } else {
+          setBestsellers(allPerfumes.slice(0, 5));
+        }
+      } catch (bestErr) {
+        setBestsellers(allPerfumes.slice(0, 5));
       }
 
-      // Fetch Stories
+      // 6. Fetch Stories
       try {
         const { data: storiesData } = await client
           .from('stories')
@@ -226,7 +280,7 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Error loading admin data:', err);
-      setErrorMessage('فشل جلب البيانات من قاعدة بيانات Supabase.');
+      setErrorMessage(`حدث خطأ أثناء تحميل البيانات: ${err?.message || 'يرجى مراجعة الإعدادات'}`);
     } finally {
       setLoading(false);
     }
@@ -789,17 +843,31 @@ export default function AdminPage() {
 
         {/* Global Error Banner if any */}
         {errorMessage && (
-          <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs mb-6 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs mb-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
               <span>{errorMessage}</span>
             </div>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className="underline text-saqr-gold text-xs font-semibold"
-            >
-              ضبط الإعدادات الآن
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => loadAdminData()}
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-colors"
+              >
+                إعادة المحاولة
+              </button>
+              <button
+                onClick={() => clearSupabaseConfig()}
+                className="px-3 py-1.5 rounded-lg bg-saqr-gold/20 hover:bg-saqr-gold/30 text-saqr-gold font-medium text-xs transition-colors"
+              >
+                استعادة الإعدادات الافتراضية
+              </button>
+              <button
+                onClick={() => setActiveTab('settings')}
+                className="underline text-saqr-gold text-xs font-semibold px-1"
+              >
+                تبويب الإعدادات
+              </button>
+            </div>
           </div>
         )}
 
@@ -1351,12 +1419,33 @@ create policy "المدير يتحكم بالستوريز" on public.stories for
                 />
               </div>
 
-              <button
-                onClick={() => saveSupabaseConfig(settingsUrl, settingsKey)}
-                className="w-full py-3 rounded-full bg-saqr-gold hover:bg-saqr-goldLight text-black font-bold text-xs transition-all active:scale-95"
-              >
-                حفظ وإعادة الاتصال
-              </button>
+              <div>
+                <label className="text-[11px] text-saqr-gray block mb-1">
+                  Service Role Key (مفتاح الإدارة الكاملة - اختياري)
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="sb_secret_... أو service_role JWT"
+                  value={settingsServiceKey}
+                  onChange={(e) => setSettingsServiceKey(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-zinc-600 text-xs font-mono focus:outline-none focus:border-saqr-gold resize-none"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button
+                  onClick={() => saveSupabaseConfig(settingsUrl, settingsKey, settingsServiceKey)}
+                  className="flex-1 py-3 rounded-full bg-saqr-gold hover:bg-saqr-goldLight text-black font-bold text-xs transition-all active:scale-95"
+                >
+                  حفظ وإعادة الاتصال
+                </button>
+                <button
+                  onClick={() => clearSupabaseConfig()}
+                  className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-all active:scale-95"
+                >
+                  استعادة الإعدادات الافتراضية
+                </button>
+              </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
