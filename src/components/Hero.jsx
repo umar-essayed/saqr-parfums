@@ -10,11 +10,17 @@ export default function Hero() {
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden pt-20 pb-12">
       {/* Background Image Visual with Apple-style Gradient Mask */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="/images/hero-banner.png"
-          alt="SAQR Parfums"
-          className="w-full h-full object-cover object-center opacity-45 scale-105 transition-transform duration-1000 ease-out"
-        />
+        <picture>
+          <source srcSet="/images/hero-banner.webp" type="image/webp" />
+          <img
+            src="/images/hero-banner.webp"
+            alt="SAQR Parfums"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-full object-cover object-center opacity-45 scale-105 transition-transform duration-1000 ease-out"
+          />
+        </picture>
         {/* Layered smooth gradients for seamless blending into background */}
         <div className="absolute inset-0 bg-gradient-to-t from-saqr-base via-saqr-base/80 to-transparent" />
         <div className="absolute inset-0 bg-radial from-transparent via-saqr-base/60 to-saqr-base" />
