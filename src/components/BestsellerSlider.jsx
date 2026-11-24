@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, config } from '../lib/supabase';
 import { AlertCircle, RefreshCw, ShoppingBag } from 'lucide-react';
-import { useCart, getPerfumePrice } from '../context/CartContext';
+import { useCart, getPerfumePrice, getPerfumeComparePrice } from '../context/CartContext';
 import { useAppSettings } from '../context/AppSettingsContext';
 
 export default function BestsellerSlider() {
@@ -133,8 +133,11 @@ export default function BestsellerSlider() {
           >
             {bestsellers.map((rawPerfume) => {
               const perfume = getLocalizedPerfume(rawPerfume);
-              const currentSize = selectedSizes[rawPerfume.id] || 100;
+              const currentSize = selectedSizes[rawPerfume.id] || 50;
               const currentPrice = getPerfumePrice(rawPerfume, currentSize);
+              const comparePrice = getPerfumeComparePrice(rawPerfume, currentSize);
+              const price50 = getPerfumePrice(rawPerfume, 50);
+              const price100 = getPerfumePrice(rawPerfume, 100);
 
               return (
                 <div
@@ -167,9 +170,14 @@ export default function BestsellerSlider() {
                       <h3 className="text-lg font-bold text-white group-hover:text-saqr-goldLight transition-colors">
                         {perfume.name}
                       </h3>
-                      <div className="mt-1 text-sm font-extrabold text-white">
-                        <span className="text-saqr-gold">{currentPrice} {t('currency')}</span>
-                        <span className="text-[11px] font-normal text-saqr-gray mx-1">/ {currentSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
+                      <div className="mt-1.5 flex items-center justify-center gap-2 text-sm font-extrabold">
+                        <span className="text-saqr-gold text-base">{currentPrice} {t('currency')}</span>
+                        {comparePrice && (
+                          <span className="text-xs text-saqr-gray/70 line-through decoration-red-400/80 font-normal">
+                            {comparePrice} {t('currency')}
+                          </span>
+                        )}
+                        <span className="text-[11px] font-normal text-saqr-gray">/ {currentSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
                       </div>
                     </div>
 
@@ -185,7 +193,7 @@ export default function BestsellerSlider() {
                               : 'bg-white/5 text-saqr-gray hover:text-white'
                           }`}
                         >
-                          50 {lang === 'ar' ? 'مل' : 'ml'} (400 {t('currency')})
+                          50 {lang === 'ar' ? 'مل' : 'ml'} ({price50} {t('currency')})
                         </button>
                         <button
                           type="button"
@@ -196,7 +204,7 @@ export default function BestsellerSlider() {
                               : 'bg-white/5 text-saqr-gray hover:text-white'
                           }`}
                         >
-                          100 {lang === 'ar' ? 'مل' : 'ml'} (650 {t('currency')})
+                          100 {lang === 'ar' ? 'مل' : 'ml'} ({price100} {t('currency')})
                         </button>
                       </div>
 

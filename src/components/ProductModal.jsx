@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { X, Sparkles, ShoppingBag, Lock } from 'lucide-react';
-import { useCart, getPerfumePrice } from '../context/CartContext';
+import { useCart, getPerfumePrice, getPerfumeComparePrice } from '../context/CartContext';
 import { useAppSettings } from '../context/AppSettingsContext';
 
 export default function ProductModal() {
   const { selectedPerfume, setSelectedPerfume, addToCart } = useCart();
   const { t, getLocalizedPerfume, lang } = useAppSettings();
-  const [selectedSize, setSelectedSize] = useState(100);
+  const [selectedSize, setSelectedSize] = useState(50);
 
   if (!selectedPerfume) return null;
 
@@ -14,6 +14,9 @@ export default function ProductModal() {
   const perfume = getLocalizedPerfume(rawPerfume);
   const isComingSoon = rawPerfume.name === 'قريباً' || rawPerfume.slug === 'coming-soon-secret';
   const price = getPerfumePrice(rawPerfume, selectedSize);
+  const comparePrice = getPerfumeComparePrice(rawPerfume, selectedSize);
+  const price50 = getPerfumePrice(rawPerfume, 50);
+  const price100 = getPerfumePrice(rawPerfume, 100);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in">
@@ -72,8 +75,14 @@ export default function ProductModal() {
           </h2>
 
           {!isComingSoon && (
-            <div className="text-xl font-bold text-saqr-gold mb-3">
-              {price} {t('currency')} <span className="text-xs font-normal text-saqr-gray mx-1">/ {selectedSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
+            <div className="flex items-center justify-center gap-2.5 text-xl font-bold text-saqr-gold mb-3">
+              <span>{price} {t('currency')}</span>
+              {comparePrice && (
+                <span className="text-sm text-saqr-gray/70 line-through decoration-red-400/80 font-normal">
+                  {comparePrice} {t('currency')}
+                </span>
+              )}
+              <span className="text-xs font-normal text-saqr-gray">/ {selectedSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
             </div>
           )}
 
@@ -98,7 +107,7 @@ export default function ProductModal() {
                         : 'bg-white/5 text-saqr-gray hover:text-white'
                     }`}
                   >
-                    50 {lang === 'ar' ? 'مل' : 'ml'} — 400 {t('currency')}
+                    50 {lang === 'ar' ? 'مل' : 'ml'} — {price50} {t('currency')}
                   </button>
                   <button
                     type="button"
@@ -109,7 +118,7 @@ export default function ProductModal() {
                         : 'bg-white/5 text-saqr-gray hover:text-white'
                     }`}
                   >
-                    100 {lang === 'ar' ? 'مل' : 'ml'} — 650 {t('currency')}
+                    100 {lang === 'ar' ? 'مل' : 'ml'} — {price100} {t('currency')}
                   </button>
                 </div>
               </div>

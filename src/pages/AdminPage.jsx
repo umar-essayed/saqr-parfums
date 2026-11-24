@@ -108,8 +108,18 @@ export default function AdminPage() {
     setAuthError('');
     setAuthLoading(true);
 
-    // Fast admin passcode or Supabase Auth
+    // Fast admin passcode + real Supabase Auth session for RLS write access
     if (authPassword === 'saqr2026' || authPassword === 'admin123') {
+      if (supabase) {
+        try {
+          await supabase.auth.signInWithPassword({
+            email: 'admin@saqr.eg',
+            password: 'saqr2026'
+          });
+        } catch (authErr) {
+          console.warn('Supabase background auth sign-in:', authErr);
+        }
+      }
       setIsAuthenticated(true);
       localStorage.setItem('saqr_admin_auth', 'true');
       setAuthLoading(false);
@@ -290,7 +300,23 @@ export default function AdminPage() {
       localStorage.removeItem('saqr_supabase_service_key');
     } catch {}
     if (isAuthenticated) {
-      loadAdminData();
+      const initSessionAndLoad = async () => {
+        if (supabase) {
+          try {
+            const { data } = await supabase.auth.getSession();
+            if (!data?.session) {
+              await supabase.auth.signInWithPassword({
+                email: 'admin@saqr.eg',
+                password: 'saqr2026'
+              });
+            }
+          } catch (e) {
+            console.warn('Auto session refresh warning:', e);
+          }
+        }
+        loadAdminData();
+      };
+      initSessionAndLoad();
     }
   }, [isAuthenticated]);
 
@@ -361,11 +387,14 @@ export default function AdminPage() {
       };
 
       if (editingPerfume) {
-        const { error } = await client
+        const { data: updatedRow, error } = await client
           .from('perfumes')
-          .update(payload)
-          .eq('id', editingPerfume.id);
+          .update({ ...payload, updated_at: new Date().toISOString() })
+          .eq('id', editingPerfume.id)
+          .select()
+          .single();
         if (error) throw error;
+        if (!updatedRow) throw new Error('لم يتم تحديث السعر - تأكد من تسجيل الدخول بصلاحيات الأدمن');
       } else {
         const { error } = await client
           .from('perfumes')

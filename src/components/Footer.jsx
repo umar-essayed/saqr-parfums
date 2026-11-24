@@ -52,7 +52,7 @@ export default function Footer() {
               {lang === 'ar' ? 'أسعار معتمدة وموحدة' : 'Standardized Pricing'}
             </span>
             <p className="text-[11px] text-saqr-gray">
-              {lang === 'ar' ? '50 مل بـ 400 ج.م • 100 مل بـ 650 ج.م' : '50 ml: 400 EGP • 100 ml: 650 EGP'}
+              {lang === 'ar' ? 'عرض 50 مل بـ 399 ج.م بدل 500 • 100 مل بـ 699 ج.م بدل 800' : '50 ml: 399 EGP (was 500) • 100 ml: 699 EGP (was 800)'}
             </p>
           </div>
           <div className="space-y-1">

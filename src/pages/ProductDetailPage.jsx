@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer';
 import { supabase, config } from '../lib/supabase';
-import { useCart, getPerfumePrice, OFFICIAL_PHONE, WHATSAPP_LINK } from '../context/CartContext';
+import { useCart, getPerfumePrice, getPerfumeComparePrice, OFFICIAL_PHONE, WHATSAPP_LINK } from '../context/CartContext';
 import { useAppSettings } from '../context/AppSettingsContext';
 import {
   ArrowRight,
@@ -31,7 +31,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [selectedSize, setSelectedSize] = useState(100);
+  const [selectedSize, setSelectedSize] = useState(50);
   const [quantity, setQuantity] = useState(1);
 
   const { addToCart } = useCart();
@@ -124,8 +124,8 @@ export default function ProductDetailPage() {
       metaDesc.setAttribute(
         'content',
         lang === 'ar'
-          ? `عطر ${localized.name} من دار صقر للعطور. ${localized.description || ''} (50 مل بـ 400 ج.م • 100 مل بـ 650 ج.م). شحن لباب بيتك ودفع عند الاستلام.`
-          : `${localized.name} from The House of SAQR. ${localized.description || ''} (50ml: 400 EGP • 100ml: 650 EGP). Cash on delivery across Egypt.`
+          ? `عطر ${localized.name} من دار صقر للعطور. ${localized.description || ''} (عرض 50 مل بـ 399 ج.م بدل 500 ج.م • 100 مل بـ 699 ج.م بدل 800 ج.م). شحن لباب بيتك ودفع عند الاستلام.`
+          : `${localized.name} from The House of SAQR. ${localized.description || ''} (50ml Offer: 399 EGP instead of 500 EGP • 100ml: 699 EGP instead of 800 EGP). Cash on delivery across Egypt.`
       );
     }
   }, [rawPerfume, lang]);
@@ -167,6 +167,11 @@ export default function ProductDetailPage() {
   const perfume = getLocalizedPerfume(rawPerfume);
   const isComingSoon = rawPerfume.name === 'قريباً' || rawPerfume.slug === 'coming-soon-secret';
   const price = getPerfumePrice(rawPerfume, selectedSize);
+  const comparePrice = getPerfumeComparePrice(rawPerfume, selectedSize);
+  const price50 = getPerfumePrice(rawPerfume, 50);
+  const compare50 = getPerfumeComparePrice(rawPerfume, 50);
+  const price100 = getPerfumePrice(rawPerfume, 100);
+  const compare100 = getPerfumeComparePrice(rawPerfume, 100);
 
   return (
     <div className="min-h-screen bg-saqr-base text-saqr-appleLight flex flex-col">
@@ -267,10 +272,15 @@ export default function ProductDetailPage() {
 
                 {/* Price Display */}
                 {!isComingSoon && (
-                  <div className="mt-4 flex items-baseline gap-3">
+                  <div className="mt-4 flex flex-wrap items-baseline gap-3">
                     <span className="text-3xl sm:text-4xl font-extrabold text-white">
                       {price} <span className="text-lg text-saqr-gold font-bold">{t('currency')}</span>
                     </span>
+                    {comparePrice && (
+                      <span className="text-base sm:text-lg text-saqr-gray/70 line-through decoration-red-400/80 font-medium">
+                        {comparePrice} {t('currency')}
+                      </span>
+                    )}
                     <span className="text-xs text-saqr-gray">
                       {t('freeShippingNotice').replace('{size}', selectedSize)}
                     </span>
@@ -306,7 +316,12 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <span className="text-xs font-bold text-white block">{t('size50Label')}</span>
-                        <span className="text-sm font-extrabold text-saqr-gold block mt-1">400 {t('currency')}</span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm font-extrabold text-saqr-gold">{price50} {t('currency')}</span>
+                          {compare50 && (
+                            <span className="text-[11px] text-saqr-gray/70 line-through decoration-red-400/80">{compare50}</span>
+                          )}
+                        </div>
                         <span className="text-[10px] text-saqr-gray block mt-0.5">{t('size50Sub')}</span>
                       </button>
 
@@ -320,7 +335,12 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <span className="text-xs font-bold text-white block">{t('size100Label')}</span>
-                        <span className="text-sm font-extrabold text-saqr-gold block mt-1">650 {t('currency')}</span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm font-extrabold text-saqr-gold">{price100} {t('currency')}</span>
+                          {compare100 && (
+                            <span className="text-[11px] text-saqr-gray/70 line-through decoration-red-400/80">{compare100}</span>
+                          )}
+                        </div>
                         <span className="text-[10px] text-saqr-gray block mt-0.5">{t('size100Sub')}</span>
                       </button>
                     </div>
@@ -484,7 +504,7 @@ export default function ProductDetailPage() {
                         </h4>
                         {!isRelComingSoon && (
                           <div className="mt-1 text-xs font-bold text-white">
-                            400 {t('currency')} <span className="text-saqr-gray text-[10px]">/ 650 {t('currency')}</span>
+                            {getPerfumePrice(rawRel, 50)} {t('currency')} <span className="text-saqr-gray text-[10px]">/ {getPerfumePrice(rawRel, 100)} {t('currency')}</span>
                           </div>
                         )}
                       </div>

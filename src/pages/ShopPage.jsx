@@ -7,7 +7,7 @@ import CartDrawer from '../components/CartDrawer';
 import Footer from '../components/Footer';
 import { supabase, config } from '../lib/supabase';
 import { Search, ShoppingBag, Eye, Lock, AlertCircle, RefreshCw } from 'lucide-react';
-import { useCart, getPerfumePrice } from '../context/CartContext';
+import { useCart, getPerfumePrice, getPerfumeComparePrice } from '../context/CartContext';
 import { useAppSettings } from '../context/AppSettingsContext';
 
 export default function ShopPage() {
@@ -203,8 +203,11 @@ export default function ShopPage() {
               {filteredPerfumes.map((rawPerfume) => {
                 const perfume = getLocalizedPerfume(rawPerfume);
                 const isComingSoon = rawPerfume.name === 'قريباً' || rawPerfume.slug === 'coming-soon-secret';
-                const currentSize = selectedSizes[rawPerfume.id] || 100;
+                const currentSize = selectedSizes[rawPerfume.id] || 50;
                 const currentPrice = getPerfumePrice(rawPerfume, currentSize);
+                const comparePrice = getPerfumeComparePrice(rawPerfume, currentSize);
+                const price50 = getPerfumePrice(rawPerfume, 50);
+                const price100 = getPerfumePrice(rawPerfume, 100);
 
                 return (
                   <div
@@ -258,9 +261,14 @@ export default function ShopPage() {
                         </h3>
 
                         {!isComingSoon && (
-                          <div className="mt-2 text-base font-extrabold text-white">
-                            <span className="text-saqr-gold">{currentPrice} {t('currency')}</span>
-                            <span className="text-xs font-normal text-saqr-gray mx-1">/ {currentSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
+                          <div className="mt-2 flex items-center justify-center gap-2 text-base font-extrabold text-white">
+                            <span className="text-saqr-gold text-lg">{currentPrice} {t('currency')}</span>
+                            {comparePrice && (
+                              <span className="text-xs text-saqr-gray/70 line-through decoration-red-400/80 font-normal">
+                                {comparePrice} {t('currency')}
+                              </span>
+                            )}
+                            <span className="text-xs font-normal text-saqr-gray">/ {currentSize} {lang === 'ar' ? 'مل' : 'ml'}</span>
                           </div>
                         )}
 
@@ -284,7 +292,7 @@ export default function ShopPage() {
                                   : 'bg-white/5 text-saqr-gray hover:text-white hover:bg-white/10'
                               }`}
                             >
-                              50 {lang === 'ar' ? 'مل' : 'ml'} (400 {t('currency')})
+                              50 {lang === 'ar' ? 'مل' : 'ml'} ({price50} {t('currency')})
                             </button>
                             <button
                               type="button"
@@ -295,7 +303,7 @@ export default function ShopPage() {
                                   : 'bg-white/5 text-saqr-gray hover:text-white hover:bg-white/10'
                               }`}
                             >
-                              100 {lang === 'ar' ? 'مل' : 'ml'} (650 {t('currency')})
+                              100 {lang === 'ar' ? 'مل' : 'ml'} ({price100} {t('currency')})
                             </button>
                           </div>
 

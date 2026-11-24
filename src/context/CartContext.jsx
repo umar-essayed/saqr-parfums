@@ -2,9 +2,33 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
-export const getPerfumePrice = (perfume, volume_ml) => {
+export const getPerfumePrice = (perfume, volume_ml = 50) => {
   if (perfume?.name === 'قريباً' || perfume?.slug === 'coming-soon-secret') return 0;
-  return Number(volume_ml) === 50 ? 400 : 650;
+  if (Number(volume_ml) === 50) {
+    return 399;
+  }
+  if (perfume?.sale_price && Number(perfume.sale_price) > 0) {
+    return Number(perfume.sale_price);
+  }
+  if (perfume?.price && Number(perfume.price) > 0) {
+    return Number(perfume.price);
+  }
+  return 699;
+};
+
+export const getPerfumeComparePrice = (perfume, volume_ml = 50) => {
+  if (perfume?.name === 'قريباً' || perfume?.slug === 'coming-soon-secret') return null;
+  if (Number(volume_ml) === 50) {
+    return 500;
+  }
+  const activePrice = getPerfumePrice(perfume, 100);
+  if (perfume?.price && Number(perfume.price) > activePrice) {
+    return Number(perfume.price);
+  }
+  if (activePrice === 699) {
+    return 800;
+  }
+  return null;
 };
 
 export const OFFICIAL_PHONE = '01041586187';
